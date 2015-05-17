@@ -15,11 +15,28 @@ namespace NyaaDownloader
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// SQLite RowID (Internal Field)
+        /// </summary>
+        private long RowId;
+        
         public string BaseUrl;
         public string Keyword;
         public string DownloadFolder;
         public DateTimeOffset LastDownload;
         public string Description;
+
+        public RssReader()
+        {
+            RowId = -1;
+            
+        }
+
+        public bool Load()
+        {
+
+            return false;
+        }
 
         public bool Read()
         {
