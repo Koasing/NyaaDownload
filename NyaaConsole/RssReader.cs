@@ -11,15 +11,36 @@ namespace NyaaDownloader
 {
     class RssReader
     {
-        public string FeedUrl;
+        public string BaseUrl;
+        public string Keyword;
+        public string DownloadFolder;
+        public DateTimeOffset LastDownload;
+        public string Description;
+
+        private SyndicationFeed RssFeed;
 
         public bool Read()
         {
-            XmlReader reader = XmlReader.Create(FeedUrl);
-            SyndicationFeed feed = SyndicationFeed.Load(reader);
-            reader.Close();
+            try
+            {
+                XmlReader reader = XmlReader.Create(BuildRssFeedUrl());
+                RssFeed = SyndicationFeed.Load(reader);
+                reader.Close();
+            }
+            catch(Exception e)
+            {
+                // write log
+                Console.WriteLine("OOPS: RSS Read failed... {0}", e);
+                return false;
+            }
 
+            return true;
+        }
 
+        private string BuildRssFeedUrl()
+        {
+            // replace space with "+" character
+            return BaseUrl + Keyword.Replace(' ', '+');
         }
     }
 }

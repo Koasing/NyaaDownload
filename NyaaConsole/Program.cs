@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+
+using System.ServiceModel.Syndication;
 
 namespace NyaaDownloader
 {
@@ -10,7 +13,11 @@ namespace NyaaDownloader
     {
         static void Main(string[] args)
         {
-            System.Console.Out.WriteLine("Hello World!");
+            XmlReader reader = XmlReader.Create(@"http://leopard-raws.org/rss.php");
+            SyndicationFeed feed = SyndicationFeed.Load(reader);
+            reader.Close();
+
+            Console.WriteLine("Hello World!");
         }
     }
 }
