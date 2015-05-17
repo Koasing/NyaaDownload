@@ -13,9 +13,14 @@ namespace NyaaDownloader
     {
         static void Main(string[] args)
         {
-            XmlReader reader = XmlReader.Create(@"http://leopard-raws.org/rss.php");
-            SyndicationFeed feed = SyndicationFeed.Load(reader);
-            reader.Close();
+            RssReader test = new RssReader();
+
+            test.BaseUrl = @"http://www.nyaa.se/?page=rss&term=";
+            test.Keyword = @"Leopard Raws";
+
+            test.LastDownload = new DateTimeOffset(2015,  5,  1,  0,  0,  0, new TimeSpan(0));
+
+            test.Read();
 
             Console.WriteLine("Hello World!");
         }
