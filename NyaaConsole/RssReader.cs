@@ -8,6 +8,7 @@ using System.Xml;
 using System.ServiceModel.Syndication;
 
 using NLog;
+using System.Data.SQLite;
 
 namespace NyaaDownloader
 {
@@ -32,10 +33,34 @@ namespace NyaaDownloader
             
         }
 
-        public bool Load()
+        public bool Load(int RowId, SQLiteConnection SqlConnection)
         {
+            SQLiteCommand command = SqlConnection.CreateCommand();
 
-            return false;
+            command.CommandText = "SELECT * FROM RssReaders WHERE ROWID=@rowid";
+            command.Parameters.AddWithValue("@rowid", RowId);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                // Parse result
+                BaseUrl = (string)reader["baseurl"];
+                Keyword = (string)reader["keyword"];
+                DownloadFolder = (string)reader["folder"];
+                Description = (string)reader["description"];
+
+                // LastDownload time is UTC based (offset=0hr)
+                LastDownload = new DateTimeOffset((DateTime)reader["lastdownload"], new TimeSpan(0, 0, 0));
+
+                return true;
+            }
+            else
+            {
+                // there is no Row with given RowId.
+                RowId = -1;
+                return false;
+            }
         }
 
         public bool Read()
