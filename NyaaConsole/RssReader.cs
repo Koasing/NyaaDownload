@@ -63,6 +63,11 @@ namespace NyaaDownloader
             }
         }
 
+        public bool Save(SQLiteConnection SqlConnection)
+        {
+            return false;
+        }
+
         public bool Read()
         {
             SyndicationFeed RssFeed = null;
