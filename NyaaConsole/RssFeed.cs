@@ -7,66 +7,31 @@ using System.Xml;
 
 using System.ServiceModel.Syndication;
 
+using Newtonsoft.Json;
 using NLog;
-using System.Data.SQLite;
 
 namespace NyaaDownloader
 {
-    class RssReader
+    [JsonObject]
+    class RssFeed
     {
+        [JsonIgnore]
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// SQLite RowID (Internal Field)
-        /// </summary>
-        private long RowId;
-        
+        [JsonProperty("baseurl", Order=1)]
         public string BaseUrl;
+
+        [JsonProperty("keyword", Order=2)]
         public string Keyword;
+
+        [JsonProperty("folder", Order=3)]
         public string DownloadFolder;
+
+        [JsonProperty("last_download", Order=4)]
         public DateTimeOffset LastDownload;
+
+        [JsonProperty("description", Order=99)]
         public string Description;
-
-        public RssReader()
-        {
-            RowId = -1;
-            
-        }
-
-        public bool Load(int RowId, SQLiteConnection SqlConnection)
-        {
-            SQLiteCommand command = SqlConnection.CreateCommand();
-
-            command.CommandText = "SELECT * FROM RssReaders WHERE ROWID=@rowid";
-            command.Parameters.AddWithValue("@rowid", RowId);
-
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            if (reader.Read())
-            {
-                // Parse result
-                BaseUrl = (string)reader["baseurl"];
-                Keyword = (string)reader["keyword"];
-                DownloadFolder = (string)reader["folder"];
-                Description = (string)reader["description"];
-
-                // LastDownload time is UTC based (offset=0hr)
-                LastDownload = new DateTimeOffset((DateTime)reader["lastdownload"], new TimeSpan(0, 0, 0));
-
-                return true;
-            }
-            else
-            {
-                // there is no Row with given RowId.
-                RowId = -1;
-                return false;
-            }
-        }
-
-        public bool Save(SQLiteConnection SqlConnection)
-        {
-            return false;
-        }
 
         public bool Read()
         {

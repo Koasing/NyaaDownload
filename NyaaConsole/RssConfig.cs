@@ -10,22 +10,23 @@ using NLog;
 
 namespace NyaaDownloader
 {
-    [JsonObject(MemberSerialization.OptIn)]
-    class Config
+    [JsonObject]
+    class RssConfig
     {
+        [JsonIgnore]
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        [JsonProperty(PropertyName = "db_file", Order = 1)]
-        public string DBFile = "database.sqlite3";
+        [JsonProperty("description", Order=1)]
+        public string Description;
 
-        [JsonProperty(PropertyName="config_table")]
-        public string ConfigTable = "config";
+        [JsonProperty("folder_prefix", Order=2)]
+        public string FolderPrefix;
 
-        [JsonProperty(PropertyName = "rss_feed_table")]
-        public string RssFeedTable = "rssfeed";
-
-        [JsonProperty(PropertyName = "inactive_days")]
+        [JsonProperty("inactive_days", Order=3)]
         public int InactiveDays = 14;
+
+        [JsonProperty("feeds", Order=99)]
+        public List<RssFeed> Feeds;
         
         public bool Load(string Filename)
         {
@@ -35,6 +36,9 @@ namespace NyaaDownloader
                 using (StreamReader file = File.OpenText(Filename))
                 {
                     JsonSerializer serializer = new JsonSerializer();
+                    serializer.DateParseHandling = DateParseHandling.DateTimeOffset;
+                    serializer.DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind;
+
                     serializer.Populate(file, this);
                 }
                 return true;
@@ -54,7 +58,17 @@ namespace NyaaDownloader
                 using (StreamWriter file = File.CreateText(Filename))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, this);
+                    JsonTextWriter writer = new JsonTextWriter(file);
+
+                    serializer.DateParseHandling = DateParseHandling.DateTimeOffset;
+                    serializer.DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind;
+
+                    // enable indent to generate human-readable output
+                    serializer.Formatting = Formatting.Indented;
+                    writer.Indentation = 2;
+                    writer.IndentChar = ' ';
+
+                    serializer.Serialize(writer, this);
                 }
                 return true;
             }

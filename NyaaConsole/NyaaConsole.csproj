@@ -65,11 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
+    <Compile Include="RssConfig.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RssReader.cs" />
+    <Compile Include="RssFeed.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
