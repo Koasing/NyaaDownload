@@ -16,17 +16,23 @@ namespace NyaaDownloader
         [JsonIgnore]
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        [JsonProperty("description", Order=1)]
+        [JsonProperty("description", Order = 1)]
         public string Description;
 
-        [JsonProperty("folder_prefix", Order=2)]
-        public string FolderPrefix;
+        [JsonProperty("base_url", Order = 2)]
+        public string RssBaseUrl = "";
 
-        [JsonProperty("inactive_days", Order=3)]
-        public int InactiveDays = 14;
+        [JsonProperty("keyword_prefix", Order = 3)]
+        public string KeywordPrefix = "";
 
-        [JsonProperty("feeds", Order=99)]
-        public List<RssFeed> Feeds;
+        [JsonProperty("folder_prefix", Order = 4)]
+        public string FolderPrefix = ".";
+
+        [JsonProperty("inactive_days", Order = 5)]
+        public int InactiveDays = 28;
+
+        [JsonProperty("feeds", Order = 99)]
+        public List<RssFeed> Feeds = new List<RssFeed>();
         
         public bool Load(string Filename)
         {
@@ -41,11 +47,14 @@ namespace NyaaDownloader
 
                     serializer.Populate(file, this);
                 }
+
+                logger.Debug("Config load successful: {0}", Filename);
                 return true;
             }
             catch(Exception e)
             {
-                logger.Error("Config load error: {0}", e);
+                logger.Warn("Config load error: {0}", Filename);
+                logger.Debug(e);
                 return false;
             }
         }
@@ -70,11 +79,14 @@ namespace NyaaDownloader
 
                     serializer.Serialize(writer, this);
                 }
+
+                logger.Debug("Config save successful: {0}", Filename);
                 return true;
             }
             catch(Exception e)
             {
-                logger.Error("Config save error: {0}", e);
+                logger.Warn("Config save error: {0}", Filename);
+                logger.Debug(e);
                 return false;
             }
         }
