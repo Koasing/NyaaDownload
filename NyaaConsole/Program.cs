@@ -25,7 +25,7 @@ namespace NyaaDownloader
             {
                 if (!File.Exists(cfgfile))
                 {
-                    Console.WriteLine("Config file \"{0}\" is not found... continue.", cfgfile);
+                    logger.Warn("Config file \"{0}\" is not found... continue.", cfgfile);
                     continue;
                 }
 
@@ -36,9 +36,9 @@ namespace NyaaDownloader
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Cannot make backup of {0}...", cfgfile);
-                    Console.WriteLine("The file is not modified nor processed.");
-                    Console.WriteLine(e.Message);
+                    logger.Warn("Cannot make backup of {0}...", cfgfile);
+                    logger.Warn("The file is not modified nor processed.");
+                    logger.Debug(e);
                     continue;
                 }
 
@@ -46,7 +46,7 @@ namespace NyaaDownloader
                 RssConfig cfg = new RssConfig();
                 if(!cfg.Load(cfgfile))
                 {
-                    Console.WriteLine("Config file \"{0}\" is not a valid config file... ignore it.");
+                    logger.Warn("Config file \"{0}\" is not a valid config file... ignore it.");
                     continue;
                 }
 
@@ -55,7 +55,7 @@ namespace NyaaDownloader
 
                 if (!cfg.Save(cfgfile))
                 {
-                    Console.WriteLine("Cannot update config file \"{0}\".", cfgfile);
+                    logger.Warn("Cannot update config file \"{0}\".", cfgfile);
                 }
             }
         }

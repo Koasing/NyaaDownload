@@ -80,7 +80,7 @@ namespace NyaaDownloader
                             dtLast = item.PublishDate;
                     }
                     else
-                        logger.Info("Already downloaded; skip {0}...", item.Title.Text);
+                        logger.Trace("Already downloaded; skip {0}...", item.Title.Text);
                 }
             }
 
@@ -97,7 +97,7 @@ namespace NyaaDownloader
                 WebClient __dl = new WebClient();
                 __dl.DownloadFile(Remote, Local);
 
-                logger.Debug("File download successful: {0} -> {1}", Remote.ToString(), Local);
+                logger.Trace("File download successful: {0} -> {1}", Remote.ToString(), Local);
                 return true;
             }
             catch (Exception e)
