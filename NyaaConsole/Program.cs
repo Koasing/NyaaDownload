@@ -13,9 +13,37 @@ namespace NyaaDownloader
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        static void parseParameter(string arg)
+        {
+            switch (arg[1])
+            {
+                case 'v': case 'V':
+                    // reconfigure logger to log verbose log
+                    foreach (var rule in LogManager.Configuration.LoggingRules)
+                    {
+                        if (rule.IsLoggingEnabledForLevel(LogLevel.Info))
+                            rule.EnableLoggingForLevel(LogLevel.Trace);
+                    }
+                    LogManager.ReconfigExistingLoggers();
+                    logger.Warn("Verbose Mode");
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
+
         static void Main(string[] args)
         {
-            List<string> CfgList = new List<string>(args);
+            List<string> CfgList = new List<string>();
+
+            foreach (string arg in args)
+            {
+                if (arg[0] == '-')
+                    parseParameter(arg);
+                else
+                    CfgList.Add(arg);
+            }
 
             // add default config
             if (CfgList.Count == 0)
