@@ -17,6 +17,9 @@ namespace NyaaDownloader
     class RssFeed
     {
         [JsonIgnore]
+        public const int SaveToTopFolder = 3;
+        
+        [JsonIgnore]
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         [JsonProperty("description", Order = 1)]
@@ -50,8 +53,33 @@ namespace NyaaDownloader
             }
             logger.Info("Retrieve RSS successful: {0}+{1}", Config.KeywordPrefix, Keyword);
 
-            // create download folder
-            string dlFolder = String.Format(@".\{0}\{1}", Config.FolderPrefix, DownloadFolder);
+            // count download item
+            int downloadItem = 0;
+            foreach (SyndicationItem item in RssFeed.Items)
+            {
+                if (item.Links.Count > 0)
+                {
+                    if (LastDownload < item.PublishDate)
+                    {
+                        downloadItem++;
+                    }
+                }
+            }
+
+            // build download folder URL
+            string dlFolder;
+
+            if (downloadItem <= SaveToTopFolder)
+            {
+                // if there is zero, one or two item(s), download to top folder;
+                dlFolder = String.Format(@".\{0}", Config.FolderPrefix);
+            }
+            else
+            {
+                // there is two or more items, create folder...
+                dlFolder = String.Format(@".\{0}\{1}", Config.FolderPrefix, DownloadFolder);
+            }
+
             try
             {
                 // No need to check path existence because CreateDirectory does it.
