@@ -108,7 +108,8 @@ namespace NyaaDownloader
                             dtLast = item.PublishDate;
                     }
                     else
-                        logger.Info("Already downloaded; skip {0}...", item.Title.Text);
+                        // Intentionally mis-leveled. It should be "Info" but I don't want to flush them to logfile.
+                        logger.Debug("Already downloaded; skip {0}...", item.Title.Text);
                 }
             }
 
